@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es6", // we target Node.js(v6)
-    "moduleResolution": "node", // we target Node.js(v6)
-    "declaration": true, // generate TypeScript definitions
-    "outDir": "dist",
-    "strict": true
+      "sourceMap": true,
+      "target": "es6",
+      "declaration": true,
+      "baseUrl": ".",
+      "moduleResolution": "node",
+      "strictNullChecks": true,
+      "strict": true
   },
   "include": [
-    "src/**/*"
+      "src/**/*"
   ]
 }

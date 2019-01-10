@@ -2,11 +2,12 @@
   "name": "@teronis/ts-definitions",
   "version": "0.0.0",
   "description": "Pure TypeScript definitions.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/teronis-ts-definitions.js",
+  "source": "src/index.ts",
+  "types": "dist/teronis-ts-definitions.d.ts",
   "scripts": {
-    "prepare": "npm run build",
-    "build": "tsc -p tsconfig.json",
+    "prepublish": "npm run build",
+    "build": "webpack || true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +21,16 @@
   },
   "homepage": "https://github.com/teroneko/teronis-ts-definitions#readme",
   "devDependencies": {
-    "typescript": "^3.2.2"
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "babel-loader": "^8.0.4",
+    "dts-bundle-webpack": "^1.0.2",
+    "source-map-loader": "^0.2.4",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
+    "typescript": "^3.2.2",
+    "webpack": "^4.28.1",
+    "webpack-cli": "^3.2.1"
   }
 }
