@@ -3,6 +3,7 @@ export type EmptyPromiseFunction = () => Promise<any>;
 export type RestArrayPromiseFunction = (...args: any[]) => Promise<any>;
 export type T1TResultPromiseFunction<T1, TResult> = (arg: T1) => Promise<TResult>;
 export type RestArrayTResultPomiseFunction<TResult> = (...args: any[]) => Promise<TResult>;
-export type GetPromiseFunctionGenericType<TFunction extends RestArrayPromiseFunction> = ReturnType<TFunction> extends Promise<infer T> ? T : never;
+export type PromiseFunctionGenericType<TFunction extends RestArrayPromiseFunction> = ReturnType<TFunction> extends Promise<infer T> ? T : never;
+export type TResultFunction<F extends RestArrayFunction, TResult> = F extends (...args: infer TParams) => any ? (...args: TParams) => TResult : never;
 
 export const nameof = <T>(name: Extract<keyof T, string>): string => name;
