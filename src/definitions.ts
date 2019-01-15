@@ -1,11 +1,8 @@
+export type RestArrayFunction = (...args: any[]) => any;
+export type EmptyPromiseFunction = () => Promise<any>;
+export type RestArrayPromiseFunction = (...args: any[]) => Promise<any>;
+export type T1TResultPromiseFunction<T1, TResult> = (arg: T1) => Promise<TResult>;
+export type RestArrayTResultPomiseFunction<TResult> = (...args: any[]) => Promise<TResult>;
+export type GetPromiseFunctionGenericType<TFunction extends RestArrayPromiseFunction> = ReturnType<TFunction> extends Promise<infer T> ? T : never;
+
 export const nameof = <T>(name: Extract<keyof T, string>): string => name;
-
-export type PromiseFunction = () => Promise<any>;
-export type PromiseFunction1Return<ArgumentType, ReturnType> = (arg: ArgumentType) => Promise<ReturnType>;
-export type PromiseFunctionRestArray = (...args: any[]) => Promise<any>;
-export type PromiseFunctionRestArrayReturn<R> = (...args: any[]) => Promise<R>;
-
-export type GetFunctionResult<F extends Function> = F extends (...args: any[]) => infer A ? A : never;
-export type GetPromiseFunctionGenericType<F extends Function> = GetFunctionResult<F> extends Promise<infer T> ? T : never;
-
-export type GetFunctionArguments<F extends Function> = F extends (...args: infer A) => any ? A : never;

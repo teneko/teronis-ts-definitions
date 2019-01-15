@@ -1,6 +1,6 @@
 {
   "name": "@teronis/ts-definitions",
-  "version": "0.2.3",
+  "version": "0.4.0",
   "description": "Pure TypeScript definitions.",
   "main": "dist/teronis-ts-definitions.js",
   "source": "src/index.ts",
