@@ -6,6 +6,6 @@ export type RestArrayTResultPomiseFunction<TResult> = (...args: any[]) => Promis
 export type PromiseFunctionGenericType<TFunction extends RestArrayPromiseFunction> = ReturnType<TFunction> extends Promise<infer T> ? T : never;
 export type TResultFunction<F extends RestArrayFunction, TResult> = F extends (...args: infer TParams) => any ? (...args: TParams) => TResult : never;
 export type FunctionParameterAt<F, TIndex extends number> = F extends (...args: infer TParams) => any ? TParams[TIndex] : never;
-export type ThisContextType<T extends Function> = T extends (this: infer T) => any ? T : never;
+export type ThisContext<T extends Function> = T extends (this: infer T) => any ? T : never;
 
 export const nameof = <T>(name: Extract<keyof T, string>): string => name;
