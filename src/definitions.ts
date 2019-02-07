@@ -37,8 +37,10 @@ export type EveryExclude<T, U> = { [K in keyof T]: Exclude<T[K], U> };
 export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
 
 
-export const nameof = <T>(name: Extract<keyof T, string>): string => name;
+export function nameof<T>(name: Extract<keyof T, string>): string {
+     return name;
+}
 
-export function hasTypeNumberProperty<T>(obj: any, property: keyof T): obj is T {
-    return obj && typeof obj[property] === "number";
+export function as<T>(value: any): T {
+    return value;
 }
