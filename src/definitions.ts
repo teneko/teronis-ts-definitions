@@ -75,10 +75,22 @@ export type ExtractObjectExceptArray<A, TObject extends object = object, TArray 
 export type ExcludeObjectExceptArray<A, TObject extends object = object, TArray extends any[]= any[]> = ExcludeObject<A, TObject> | ExtractArray<A, TArray>;
 
 
-/** Get a member of `T`, that throws an error if not contained in `T`. */
-export function nameof<T>(name: Extract<keyof T, string>): string {
+/** 
+ * Use this if you need an inline variable.
+ * @example never extends Inferable<[ComplexType], infer T> ? T : never
+ */
+export type Inferable<T, Inference extends T = T> = T;
+
+/** Get a property of `T`, that throws an error if not contained in `T`. */
+export function keyof<T>(name: Extract<keyof T, string>): string {
     return name;
 }
+
+/** 
+ * Get a property of `T`, that throws an error if not contained in `T`.
+ * @deprecated Consider to use keyof due to name change. 
+ */
+export const nameof = keyof;
 
 /** A function that returns `value` that is now typed as `T`. */
 export function as<T>(value: any): T {
