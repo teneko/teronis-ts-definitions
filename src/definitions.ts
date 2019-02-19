@@ -79,7 +79,7 @@ export type ExcludeObjectExceptArray<A, TObject extends object = object, TArray 
  * Use this if you need an inline variable.
  * @example never extends Inferable<[ComplexType], infer T> ? T : never
  */
-export type Inferable<T, Inference extends T = T> = T;
+export type Inferable<T, Inference extends T> = T;
 
 /** Get a property of `T`, that throws an error if not contained in `T`. */
 export function keyof<T>(name: Extract<keyof T, string>): string {
