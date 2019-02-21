@@ -68,11 +68,14 @@ export type ExcludeObject<A, TObject extends object = object> = Exclude<A, TObje
 /** Exclude any array, unless otherwise specified by `TArray`, from `A`. */
 export type ExcludeArray<A, TArray extends object = object> = Exclude<A, TArray>;
 
-/** Extract object of `A` except any array, unless otherwise specified by `TArray`. */
-export type ExtractObjectExceptArray<A, TObject extends object = object, TArray extends any[]= any[]> = ExcludeArray<ExtractObject<A, TObject>, TArray>;
+/** Extract object from `A`, unless otherwise specified by `TObject`, then exlude any array from `A`, unless otherwise specified by `TArray`. The order can be relevant. */
+export type ExcludeArrayAfterExtractObject<A, TObject extends object = object, TArray extends any[]= any[]> = ExcludeArray<ExtractObject<A, TObject>, TArray>;
 
-/** Exclude object, unless otherwise specified by `TOrray`, from `A` except any array, unless otherwise specified by `TArray`. */
-export type ExcludeObjectExceptArray<A, TObject extends object = object, TArray extends any[]= any[]> = ExcludeObject<A, TObject> | ExtractArray<A, TArray>;
+/** Exlude any array from `A`, unless otherwise specified by `TArray`, then extract object from `A`, unless otherwise specified by `TObject`. The order can be relevant. */
+export type ExtractObjectAfterExcludeArray<A, TObject extends object = object, TArray extends any[]= any[]> = ExtractObject<ExcludeArray<A, TArray>, TObject>;
+
+/** Create an union of an excluded object, unless otherwise specified by `TObject`, and an extracted array, unless otherwise specified by `TArray`. */
+export type ExcludedObjectAndExtractedArrayUnion<A, TObject extends object = object, TArray extends any[]= any[]> = ExcludeObject<A, TObject> | ExtractArray<A, TArray>;
 
 
 /** 
@@ -85,12 +88,6 @@ export type Inferable<T, Inference extends T> = T;
 export function keyof<T>(name: Extract<keyof T, string>): string {
     return name;
 }
-
-/** 
- * Get a property of `T`, that throws an error if not contained in `T`.
- * @deprecated Consider to use keyof due to name change. 
- */
-export const nameof = keyof;
 
 /** A function that returns `value` that is now typed as `T`. */
 export function as<T>(value: any): T {
