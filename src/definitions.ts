@@ -66,7 +66,7 @@ export type ExtractArray<A, TArray extends any[]= any[]> = Extract<A, TArray>;
 /** Exclude object, unless otherwise specified by `TObject`, from `A`. */
 export type ExcludeObject<A, TObject extends object = object> = Exclude<A, TObject>;
 /** Exclude any array, unless otherwise specified by `TArray`, from `A`. */
-export type ExcludeArray<A, TArray extends object = object> = Exclude<A, TArray>;
+export type ExcludeArray<A, TArray extends any[] = any[]> = Exclude<A, TArray>;
 
 /** Extract object from `A`, unless otherwise specified by `TObject`, then exlude any array from `A`, unless otherwise specified by `TArray`. The order can be relevant. */
 export type ExcludeArrayAfterExtractObject<A, TObject extends object = object, TArray extends any[]= any[]> = ExcludeArray<ExtractObject<A, TObject>, TArray>;
