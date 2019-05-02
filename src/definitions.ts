@@ -47,6 +47,86 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type SomePartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type SomeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 export type EveryExclude<T, U> = { [K in keyof T]: Exclude<T[K], U> };
+/** Extract T, but return unknown */
+export type Length<Tuple extends any[]> = Tuple extends { length: infer L } ? L : 0;
+/** credits: https://stackoverflow.com/a/49936686/11044059 */
+export type DeepPartial<T> = {
+    [P in keyof T]?: (
+        T[P] extends Array<infer U>
+        ? Array<DeepPartial<U>>
+        : T[P] extends ReadonlyArray<infer U>
+        ? ReadonlyArray<DeepPartial<U>>
+        : DeepPartial<T[P]>
+    )
+};
+/** Pick properties of object and those properties are deep partial. */
+export type PickDeepPartial<T, K extends keyof T> = { [P in K]: DeepPartial<T[P]>; };
+/** If `Keys` is equals never, then `never` will be returned instead of `{}`. */
+export type NoneEmptyPick<T, Keys extends keyof T> = [Keys] extends [never] ? never : Pick<T, Keys>;
+
+/** Prevents an intersection if A or B extends NotType. */
+export type NoneTypeExtendsNotTypeIntersection<
+    A,
+    B,
+    NotType,
+    WrapUpInTuple extends boolean = false,
+    Otherwise = A & B,
+    __A = true extends WrapUpInTuple ? [A] : A,
+    __B = true extends WrapUpInTuple ? [B] : B,
+    __NotType = true extends WrapUpInTuple ? [NotType] : NotType
+    > = (
+        __B extends __NotType
+        ? A
+        : (__A extends __NotType
+            ? B
+            : Otherwise)
+    );
+/** Prevents an intersection if NotType extends A or B. */
+export type NoneNotTypeExtendsTypeIntersection<
+    A,
+    B,
+    NotType,
+    WrapUpInTuple extends boolean = false,
+    Otherwise = A & B,
+    __A = true extends WrapUpInTuple ? [A] : A,
+    __B = true extends WrapUpInTuple ? [B] : B,
+    __NotType = true extends WrapUpInTuple ? [NotType] : NotType
+    > = (
+        __NotType extends __B
+        ? A
+        : (__NotType extends __A
+            ? B
+            : Otherwise)
+    );
+/** Prevents an intersection if A or B is equals NotType. */
+export type NoneTypeEqualsNotTypeIntersection<
+    A,
+    B,
+    NotType,
+    WrapUpInTuple extends boolean = false,
+    Otherwise = A & B,
+    __A = true extends WrapUpInTuple ? [A] : A,
+    __B = true extends WrapUpInTuple ? [B] : B,
+    __NotType = true extends WrapUpInTuple ? [NotType] : NotType
+    > = (
+        __B extends __NotType
+        ? (__NotType extends __B
+            ? A
+            : (__A extends __NotType
+                ? (__NotType extends __A
+                    ? B
+                    : Otherwise)
+                : Otherwise))
+        : (__A extends __NotType
+            ? (__NotType extends __A
+                ? B
+                : (__B extends __NotType
+                    ? (__NotType extends __B
+                        ? A
+                        : Otherwise)
+                    : Otherwise))
+            : Otherwise)
+    );
 
 
 // Credits go to @jcalz from https://stackoverflow.com/questions/50374908/transform-union-type-to-intersection-type
@@ -55,28 +135,13 @@ export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) ex
 
 /** Get any keys of the type `T`, that extends any. The purpose is to get the keys of union types as union. */
 export type AnyKeys<T> = T extends any ? keyof T : never;
+/**
+ * Get the optional keys from an object.
+ * Credits: https://stackoverflow.com/a/49683575
+ */
+export type OptionalKeys<Props> = { [K in keyof Props]-?: {} extends { [P in K]: Props[K] } ? K : never }[keyof Props];
 /** Returns `true` or `false`, whether `A` extends `B` or not. `A` and `B` are compared in brackets, that eliminates wrong results. */
 export type Extends<A, B> = [A] extends [B] ? true : false;
-
-/** Extract object, unless otherwise specified by `TObject`, of `A`. */
-export type ExtractObject<A, TObject extends object = object> = Extract<A, TObject>;
-/** Extract any array, unless otherwise specified by `TArray`, from `A`. */
-export type ExtractArray<A, TArray extends any[]= any[]> = Extract<A, TArray>;
-
-/** Exclude object, unless otherwise specified by `TObject`, from `A`. */
-export type ExcludeObject<A, TObject extends object = object> = Exclude<A, TObject>;
-/** Exclude any array, unless otherwise specified by `TArray`, from `A`. */
-export type ExcludeArray<A, TArray extends any[] = any[]> = Exclude<A, TArray>;
-
-/** Extract object from `A`, unless otherwise specified by `TObject`, then exlude any array from `A`, unless otherwise specified by `TArray`. The order can be relevant. */
-export type ExcludeArrayAfterExtractObject<A, TObject extends object = object, TArray extends any[]= any[]> = ExcludeArray<ExtractObject<A, TObject>, TArray>;
-
-/** Exlude any array from `A`, unless otherwise specified by `TArray`, then extract object from `A`, unless otherwise specified by `TObject`. The order can be relevant. */
-export type ExtractObjectAfterExcludeArray<A, TObject extends object = object, TArray extends any[]= any[]> = ExtractObject<ExcludeArray<A, TArray>, TObject>;
-
-/** Create an union of an excluded object, unless otherwise specified by `TObject`, and an extracted array, unless otherwise specified by `TArray`. */
-export type ExcludedObjectAndExtractedArrayUnion<A, TObject extends object = object, TArray extends any[]= any[]> = ExcludeObject<A, TObject> | ExtractArray<A, TArray>;
-
 
 /** 
  * Use this if you need an inline variable.
