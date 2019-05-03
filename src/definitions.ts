@@ -64,50 +64,75 @@ export type PickDeepPartial<T, K extends keyof T> = { [P in K]: DeepPartial<T[P]
 /** If `Keys` is equals never, then `never` will be returned instead of `{}`. */
 export type NoneEmptyPick<T, Keys extends keyof T> = [Keys] extends [never] ? never : Pick<T, Keys>;
 
+export interface NoneNotTypeIntersectionOptions {
+    Comparable_A: any;
+    Comparable_B: any;
+    UseKeyOf_AB: boolean;
+    WrapInTuple: boolean;
+    EndResult: any;
+}
+
+export interface DefaultNoneNotTypeIntersectionOptions extends Pick<NoneNotTypeIntersectionOptions, "WrapInTuple" | "UseKeyOf_AB"> {
+    UseKeyOf_AB: boolean;
+    WrapInTuple: false;
+}
+
 /** Prevents an intersection if A or B extends NotType. */
 export type NoneTypeExtendsNotTypeIntersection<
     A,
     B,
     NotType,
-    WrapUpInTuple extends boolean = false,
-    Otherwise = A & B,
-    __A = true extends WrapUpInTuple ? [A] : A,
-    __B = true extends WrapUpInTuple ? [B] : B,
-    __NotType = true extends WrapUpInTuple ? [NotType] : NotType
+    Options extends DeepPartial<NoneNotTypeIntersectionOptions> = DefaultNoneNotTypeIntersectionOptions,
+    __Comparable_A = Options extends Pick<NoneNotTypeIntersectionOptions, "Comparable_A"> ? Options["Comparable_A"] : A,
+    __Comparable_B = Options extends Pick<NoneNotTypeIntersectionOptions, "Comparable_B"> ? Options["Comparable_B"] : B,
+    __UseKeyOf_AB = Options extends Pick<NoneNotTypeIntersectionOptions, "UseKeyOf_AB"> ? Options["UseKeyOf_AB"] : DefaultNoneNotTypeIntersectionOptions["UseKeyOf_AB"],
+    __WrapUpInTuple = Options extends Pick<NoneNotTypeIntersectionOptions, "WrapInTuple"> ? Options["WrapInTuple"] : DefaultNoneNotTypeIntersectionOptions["WrapInTuple"],
+    __A = true extends __UseKeyOf_AB ? (true extends __WrapUpInTuple ? [keyof __Comparable_A] : keyof __Comparable_A) : (true extends __WrapUpInTuple ? [__Comparable_A] : __Comparable_A),
+    __B = true extends __UseKeyOf_AB ? (true extends __WrapUpInTuple ? [keyof __Comparable_B] : keyof __Comparable_B) : (true extends __WrapUpInTuple ? [__Comparable_B] : __Comparable_B),
+    __NotType = true extends __WrapUpInTuple ? [NotType] : NotType,
+    __EndResult = Options extends Pick<NoneNotTypeIntersectionOptions, "EndResult"> ? Options["EndResult"] : A & B,
     > = (
         __B extends __NotType
         ? A
         : (__A extends __NotType
             ? B
-            : Otherwise)
+            : __EndResult)
     );
 /** Prevents an intersection if NotType extends A or B. */
 export type NoneNotTypeExtendsTypeIntersection<
     A,
     B,
     NotType,
-    WrapUpInTuple extends boolean = false,
-    Otherwise = A & B,
-    __A = true extends WrapUpInTuple ? [A] : A,
-    __B = true extends WrapUpInTuple ? [B] : B,
-    __NotType = true extends WrapUpInTuple ? [NotType] : NotType
+    Options extends DeepPartial<NoneNotTypeIntersectionOptions> = DefaultNoneNotTypeIntersectionOptions,
+    __Comparable_A = Options extends Pick<NoneNotTypeIntersectionOptions, "Comparable_A"> ? Options["Comparable_A"] : A,
+    __Comparable_B = Options extends Pick<NoneNotTypeIntersectionOptions, "Comparable_B"> ? Options["Comparable_B"] : B,
+    __UseKeyOf_AB = Options extends Pick<NoneNotTypeIntersectionOptions, "UseKeyOf_AB"> ? Options["UseKeyOf_AB"] : DefaultNoneNotTypeIntersectionOptions["UseKeyOf_AB"],
+    __WrapUpInTuple = Options extends Pick<NoneNotTypeIntersectionOptions, "WrapInTuple"> ? Options["WrapInTuple"] : DefaultNoneNotTypeIntersectionOptions["WrapInTuple"],
+    __A = true extends __UseKeyOf_AB ? (true extends __WrapUpInTuple ? [keyof __Comparable_A] : keyof __Comparable_A) : (true extends __WrapUpInTuple ? [__Comparable_A] : __Comparable_A),
+    __B = true extends __UseKeyOf_AB ? (true extends __WrapUpInTuple ? [keyof __Comparable_B] : keyof __Comparable_B) : (true extends __WrapUpInTuple ? [__Comparable_B] : __Comparable_B),
+    __NotType = true extends __WrapUpInTuple ? [NotType] : NotType,
+    __EndResult = Options extends Pick<NoneNotTypeIntersectionOptions, "EndResult"> ? Options["EndResult"] : A & B,
     > = (
         __NotType extends __B
         ? A
         : (__NotType extends __A
             ? B
-            : Otherwise)
+            : __EndResult)
     );
 /** Prevents an intersection if A or B is equals NotType. */
 export type NoneTypeEqualsNotTypeIntersection<
     A,
     B,
     NotType,
-    WrapUpInTuple extends boolean = false,
-    Otherwise = A & B,
-    __A = true extends WrapUpInTuple ? [A] : A,
-    __B = true extends WrapUpInTuple ? [B] : B,
-    __NotType = true extends WrapUpInTuple ? [NotType] : NotType
+    Options extends DeepPartial<NoneNotTypeIntersectionOptions> = DefaultNoneNotTypeIntersectionOptions,
+    __Comparable_A = Options extends Pick<NoneNotTypeIntersectionOptions, "Comparable_A"> ? Options["Comparable_A"] : A,
+    __Comparable_B = Options extends Pick<NoneNotTypeIntersectionOptions, "Comparable_B"> ? Options["Comparable_B"] : B,
+    __UseKeyOf_AB = Options extends Pick<NoneNotTypeIntersectionOptions, "UseKeyOf_AB"> ? Options["UseKeyOf_AB"] : DefaultNoneNotTypeIntersectionOptions["UseKeyOf_AB"],
+    __WrapUpInTuple = Options extends Pick<NoneNotTypeIntersectionOptions, "WrapInTuple"> ? Options["WrapInTuple"] : DefaultNoneNotTypeIntersectionOptions["WrapInTuple"],
+    __A = true extends __UseKeyOf_AB ? (true extends __WrapUpInTuple ? [keyof __Comparable_A] : keyof __Comparable_A) : (true extends __WrapUpInTuple ? [__Comparable_A] : __Comparable_A),
+    __B = true extends __UseKeyOf_AB ? (true extends __WrapUpInTuple ? [keyof __Comparable_B] : keyof __Comparable_B) : (true extends __WrapUpInTuple ? [__Comparable_B] : __Comparable_B),
+    __NotType = true extends __WrapUpInTuple ? [NotType] : NotType,
+    __EndResult = Options extends Pick<NoneNotTypeIntersectionOptions, "EndResult"> ? Options["EndResult"] : A & B,
     > = (
         __B extends __NotType
         ? (__NotType extends __B
@@ -115,17 +140,17 @@ export type NoneTypeEqualsNotTypeIntersection<
             : (__A extends __NotType
                 ? (__NotType extends __A
                     ? B
-                    : Otherwise)
-                : Otherwise))
+                    : __EndResult)
+                : __EndResult))
         : (__A extends __NotType
             ? (__NotType extends __A
                 ? B
                 : (__B extends __NotType
                     ? (__NotType extends __B
                         ? A
-                        : Otherwise)
-                    : Otherwise))
-            : Otherwise)
+                        : __EndResult)
+                    : __EndResult))
+            : __EndResult)
     );
 
 
