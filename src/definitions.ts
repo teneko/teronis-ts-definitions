@@ -44,25 +44,43 @@ export type PromisifyFn<Fn extends RestArrayFn> = Fn extends (...args: any[]) =>
 
 // Omit taken from https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+export type OmitType<T, U> = Pick<T, Exclude<keyof T, keyof U>>;
 export type SomePartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type SomeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 export type EveryExclude<T, U> = { [K in keyof T]: Exclude<T[K], U> };
 /** Extract T, but return unknown */
 export type Length<Tuple extends any[]> = Tuple extends { length: infer L } ? L : 0;
 /** credits: https://stackoverflow.com/a/49936686/11044059 */
-export type DeepPartial<T> = {
-    [P in keyof T]?: (
+export type DeepPartial<T> = (
+    {
+        [P in keyof T]?: (
+            T[P] extends Array<infer U>
+            ? Array<DeepPartial<U>>
+            : (T[P] extends ReadonlyArray<infer U>
+                ? ReadonlyArray<DeepPartial<U>>
+                : DeepPartial<T[P]>)) }
+);
+export type DeepAs<T, Type> = (
+    { [P in keyof T]?: (
         T[P] extends Array<infer U>
-        ? Array<DeepPartial<U>>
-        : T[P] extends ReadonlyArray<infer U>
-        ? ReadonlyArray<DeepPartial<U>>
-        : DeepPartial<T[P]>
-    )
-};
-/** Pick properties of object and those properties are deep partial. */
+        ? Array<DeepAs<U, Type>>
+        : (T[P] extends ReadonlyArray<infer U>
+            ? ReadonlyArray<DeepAs<U, Type>>
+            : (T[P] extends object
+                ? DeepAs<T[P], Type>
+                : Type))) }
+);
+/** Pick properties of an object as `DeepPartial`. */
 export type PickDeepPartial<T, K extends keyof T> = { [P in K]: DeepPartial<T[P]>; };
 /** If `Keys` is equals never, then `never` will be returned instead of `{}`. */
 export type NoneEmptyPick<T, Keys extends keyof T> = [Keys] extends [never] ? never : Pick<T, Keys>;
+/** Pick properties of an object and cast them to `Type`. */
+export type PickAs<T, K extends keyof T, Type> = {
+    [P in K]: Type;
+};
+export type PickAsDeepAs<T, K extends keyof T, Type> = {
+    [P in K]: DeepAs<T[P], Type>;
+};
 
 export interface NoneNotTypeIntersectionOptions {
     Comparable_A: any;
