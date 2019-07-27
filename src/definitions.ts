@@ -41,9 +41,6 @@ export type PromisifyFn<Fn extends RestArrayFn> = Fn extends (...args: any[]) =>
         (...args: Parameters<Fn>) => Promise<ReturnType>) :
     never;
 
-
-// Omit taken from https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type OmitType<T, U> = Pick<T, Exclude<keyof T, keyof U>>;
 export type SomePartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type SomeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
