@@ -1,9 +1,11 @@
 /** A function that accepts any arguments and returns `any`. */
-export type RestArrayFn = (...args: any[]) => any;
+export type RestArrayWithResultFunction<Result> = (...args: any[]) => Result;
+/** A function that accepts any arguments and returns `any`. */
+export type RestArrayFunction = RestArrayWithResultFunction<any>;
 /** A function that accepts one generic argument and returns a generic type. */
-export type ParamTypeToReturnTypeFn<ParamType, ReturnType> = (arg: ParamType) => ReturnType;
+export type ParamWithResultFunction<ParamType, Result> = (arg: ParamType) => Result;
 /** A function that is fusioned by function head (parameter list) and function body (return type). */
-export type FunctionResultUnion<Fn extends RestArrayFn, ReturnType> = Fn extends (this: infer Context, ...args: infer Params) => any ? (this: Context, ...args: Params) => ReturnType : never;
+export type FnParamsWithResultFunction<Fn extends RestArrayFunction, Result> = Fn extends (...args: infer Params) => any ? (...args: Params) => Result : never;
 
 /** Get the parameter type of the function by index. */
 export type FnParamAt<Fn, Index extends number> = Fn extends (...args: infer Params) => any ? Params[Index] : never;
@@ -11,35 +13,26 @@ export type FnParamAt<Fn, Index extends number> = Fn extends (...args: infer Par
 export type ContextType<Fn extends Function> = Fn extends (this: infer T) => any ? T : never;
 
 
-/** A function that accepts no arguments and returns `Promise<any>`. */
-export type EmptyParamsToPromiseFn = () => Promise<any>;
-
 /** A function that accepts any arguments and returns any typed `Promise<any>` */
-export type RestArrayToPromiseFn = (...args: any[]) => Promise<any>;
+export type RestArrayWithAnyPromiseResultFunction = (...args: any[]) => Promise<any>;
 /** A function that accepts any arguments and returns a generic typed Promise. */
-export type RestArrayToPromiseResolveTypeFn<ResolveType> = (...args: any[]) => Promise<ResolveType>;
+export type RestArrayWithPromiseResultFunction<ResolveType> = (...args: any[]) => Promise<ResolveType>;
 
 /** A function that accepts one generic argument and returns `Promise<any>`. */
-export type ParamToPromiseFn<T1> = (arg: T1) => Promise<any>;
+export type ParamWithAnyPromiseResultFunction<T1> = (arg: T1) => Promise<any>;
 /** A function that accepts one generic argument and returns a generic typed Promise. */
-export type ParamToPromiseResolveTypeFn<T1, ResolveType> = (arg: T1) => Promise<ResolveType>;
+export type ParamWithPromiseResultFunction<T1, ResolveType> = (arg: T1) => Promise<ResolveType>;
 
 /** Get the resolve type of the generic typed Promise or never. */
-export type PromiseResolveType<ReturnType> = ReturnType extends Promise<infer T> ? T : never;
+export type PromiseResolveType<Type> = Type extends Promise<infer T> ? T : never;
 /** Get the resolve type of the generic typed Promise that gets returned by a function. */
-export type PromiseResolveTypeFromFn<Fn extends RestArrayToPromiseFn> = PromiseResolveType<ReturnType<Fn>>;
+export type PromiseResolveTypeFromReturnType<Fn extends RestArrayWithAnyPromiseResultFunction> = PromiseResolveType<ReturnType<Fn>>;
 
 /** Get the resolve type of the generic typed Promise or the generic type. */
-export type PromiseResolveTypeOrType<Type> = Type extends Promise<infer ResolveType> ?
-    ResolveType :
-    Type;
+export type PromiseResolveTypeOrType<Type> = Type extends Promise<infer ResolveType> ? ResolveType : Type;
 
-/** A function that converts a non-Promise-returning function into a function that returns a Promise. */
-export type PromisifyFn<Fn extends RestArrayFn> = Fn extends (...args: any[]) => infer ReturnType ?
-    (ReturnType extends Promise<infer PromiseResolveType> ?
-        (...args: Parameters<Fn>) => Promise<PromiseResolveType> :
-        (...args: Parameters<Fn>) => Promise<ReturnType>) :
-    never;
+/** A function that encapsulate the return type of a function in a promise. */
+export type PromisifiedFunction<Fn extends RestArrayFunction> = Fn extends (...args: any[]) => infer ReturnType ? (...args: Parameters<Fn>) => Promise<ReturnType> : never;
 
 export type OmitType<T, U> = Pick<T, Exclude<keyof T, keyof U>>;
 export type SomePartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
@@ -198,3 +191,4 @@ export function keyof<T>(name: Extract<keyof T, string>): string {
 export function as<T>(value: any): T {
     return value;
 }
+  
