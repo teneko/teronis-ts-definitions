@@ -183,7 +183,7 @@ export type Extends<A, B> = [A] extends [B] ? true : false;
 export type Inferable<T, Inference extends T> = T;
 
 /** Get a property of `T`, that throws an error if not contained in `T`. */
-export function keyof<T>(name: Extract<keyof T, string>): string {
+export function keyof<T>(name: Extract<keyof T, string>): keyof T {
     return name;
 }
 
@@ -191,4 +191,3 @@ export function keyof<T>(name: Extract<keyof T, string>): string {
 export function as<T>(value: any): T {
     return value;
 }
-  
